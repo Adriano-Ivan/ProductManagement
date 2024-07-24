@@ -9,4 +9,6 @@ public class Product : BaseEntity
     public string Marca { get; set; }
     public UnidadeMedida UnidadeMedida { get; set; }
     public double ValorDeCompra { get; set; }
+    public Provider? Provider { get; set; }
+    public Guid? ProviderId { get; set; }
 }

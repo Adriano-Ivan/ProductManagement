@@ -19,6 +19,7 @@ public static class PersistenceServiceRegistration
 
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         services.AddScoped<IProductRepository, ProductRepository>();
+        services.AddScoped<IProviderRepository, ProviderRepository>();  
 
         return services;
     }

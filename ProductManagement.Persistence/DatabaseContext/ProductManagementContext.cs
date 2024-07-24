@@ -13,6 +13,8 @@ public class ProductManagementContext : DbContext
 
     public DbSet<Product> Products { get; set; }
 
+    public DbSet<Provider> Providers { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ProductManagementContext).Assembly);
