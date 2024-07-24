@@ -20,10 +20,8 @@ public sealed class CreateProductCommandHandler : IRequestHandler<CreateProductC
     {
         var product = _mapper.Map<Domain.Product>(request);
 
-        // Insert entity
         var createdProduct = await _productRepository.CreateAsync(product);
 
-        // return id
         return createdProduct.Id;
     }
 }
