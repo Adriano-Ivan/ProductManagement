@@ -7,9 +7,13 @@ namespace ProductManagement.Application.Features.Products.Commands.CreateProduct
 public sealed class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>
 {
     private readonly IProductRepository _productRepository;
+    private readonly IProviderRepository _providerRepository;
 
-    public CreateProductCommandValidator(IProductRepository productRepository)
+    public CreateProductCommandValidator(IProductRepository productRepository, IProviderRepository providerRepository)
     {
+        RuleFor(p => p.ProviderId)
+            .MustAsync(ProviderMustExistOrBeNull);
+
         RuleFor(p => p.Descricao)
             .NotEmpty().WithMessage("{PropertyName} is required")
             .NotNull()
@@ -33,10 +37,21 @@ public sealed class CreateProductCommandValidator : AbstractValidator<CreateProd
             .WithMessage("Product already exists");
 
         this._productRepository = productRepository;
+        _providerRepository = providerRepository;
     }
 
     private async Task<bool> ProductNameUnique(CreateProductCommand command, CancellationToken token)
     {
         return await _productRepository.IsProductNameUnique(command.Descricao);
+    }
+
+    private async Task<bool> ProviderMustExistOrBeNull(Guid? providerId, CancellationToken token)
+    {
+        if (providerId == null)
+        {
+            return true;
+        }
+
+        return await _providerRepository.AnyAsync(providerId.Value);
     }
 }

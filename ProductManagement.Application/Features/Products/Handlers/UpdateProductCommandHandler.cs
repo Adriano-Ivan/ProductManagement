@@ -10,16 +10,18 @@ public sealed class UpdateProductCommandHandler : IRequestHandler<UpdateProductC
 {
     private readonly IMapper _mapper;
     private readonly IProductRepository _productRepository;
+    private readonly IProviderRepository _providerRepository;
 
-    public UpdateProductCommandHandler(IMapper mapper, IProductRepository productRepository)
+    public UpdateProductCommandHandler(IMapper mapper, IProductRepository productRepository, IProviderRepository providerRepository)
     {
         _mapper = mapper;
         _productRepository = productRepository;
+        _providerRepository = providerRepository;
     }
 
     public async Task<bool> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
     {
-        var validator = new UpdateProductCommandValidator(this._productRepository);
+        var validator = new UpdateProductCommandValidator(this._productRepository, this._providerRepository);
         var validationResult = await validator.ValidateAsync(request);
 
         if (validationResult.Errors.Any())

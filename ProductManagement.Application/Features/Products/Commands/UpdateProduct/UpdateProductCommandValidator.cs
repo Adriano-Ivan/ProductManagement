@@ -6,12 +6,16 @@ namespace ProductManagement.Application.Features.Products.Commands.UpdateProduct
 public sealed class UpdateProductCommandValidator : AbstractValidator<UpdateProductCommand>    
 {
     private readonly IProductRepository _productRepository;
+    private readonly IProviderRepository _providerRepository;
 
-    public UpdateProductCommandValidator(IProductRepository productRepository)
+    public UpdateProductCommandValidator(IProductRepository productRepository, IProviderRepository providerRepository)
     {
         RuleFor(p => p.Id)
             .NotNull()
             .MustAsync(ProductMustExist);
+
+        RuleFor(p => p.ProviderId)
+            .MustAsync(ProviderMustExistOrBeNull);
 
         RuleFor(p => p.Descricao)
             .NotEmpty().WithMessage("{PropertyName} is required")
@@ -35,7 +39,8 @@ public sealed class UpdateProductCommandValidator : AbstractValidator<UpdateProd
             .MustAsync(ProductNameUnique)
             .WithMessage("Product already exists");
 
-        this._productRepository = productRepository;
+        _productRepository = productRepository;
+        _providerRepository = providerRepository;
     }
 
     private async Task<bool> ProductNameUnique(UpdateProductCommand command, CancellationToken token)
@@ -46,5 +51,15 @@ public sealed class UpdateProductCommandValidator : AbstractValidator<UpdateProd
     private async Task<bool> ProductMustExist(Guid id, CancellationToken token)
     {
         return await _productRepository.AnyAsync(id);
+    }
+
+    private async Task<bool> ProviderMustExistOrBeNull(Guid? providerId, CancellationToken token)
+    {
+        if(providerId == null) 
+        {
+            return true;
+        }
+
+        return await _providerRepository.AnyAsync(providerId.Value);
     }
 }

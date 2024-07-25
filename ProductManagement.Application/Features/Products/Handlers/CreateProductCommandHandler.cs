@@ -10,16 +10,18 @@ public sealed class CreateProductCommandHandler : IRequestHandler<CreateProductC
 {
     private readonly IMapper _mapper;
     private readonly IProductRepository _productRepository;
+    private readonly IProviderRepository _providerRepository;
 
-    public CreateProductCommandHandler(IMapper mapper, IProductRepository productRepository)
+    public CreateProductCommandHandler(IMapper mapper, IProductRepository productRepository, IProviderRepository providerRepository)
     {
         _mapper = mapper;
         _productRepository = productRepository;
+        _providerRepository = providerRepository;
     }
 
     public async Task<Guid> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
-        var validator = new CreateProductCommandValidator(this._productRepository);
+        var validator = new CreateProductCommandValidator(this._productRepository, this._providerRepository);
         var validationResult = await validator.ValidateAsync(request);
 
         if (validationResult.Errors.Any())

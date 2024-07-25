@@ -15,7 +15,7 @@ public static class PersistenceServiceRegistration
         services.AddDbContext<ProductManagementContext>(options => {
             options.UseSqlServer(configuration.GetConnectionString("ProductManagementConnectionString"));
         });
-
+ 
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IProviderRepository, ProviderRepository>();  

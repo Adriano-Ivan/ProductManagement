@@ -30,6 +30,6 @@ public class ProviderConfiguration : IEntityTypeConfiguration<Provider>
         builder.HasMany(p => p.Products)
             .WithOne(p => p.Provider)
             .HasForeignKey(x => x.ProviderId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }
