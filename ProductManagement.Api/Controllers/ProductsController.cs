@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using ProductManagement.Application.Features.Products.Commands.CreateProduct;
+using ProductManagement.Application.Features.Products.Commands.DeleteProduct;
 using ProductManagement.Application.Features.Products.Commands.UpdateProduct;
 using ProductManagement.Application.Features.Products.Queries.GetProductDetails;
 using System.Reflection.Metadata.Ecma335;
@@ -46,6 +47,18 @@ namespace ProductManagement.Api.Controllers
         public async Task<ActionResult<bool>> Put(Guid id, [FromBody] UpdateProductRequest request)
         {
             var command = new UpdateProductCommand(id, request.Descricao, request.Marca, request.UnidadeMedida, request.ValorDeCompra);
+            await _mediator.Send(command);
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
+        public async Task<ActionResult> Delete(Guid id)
+        {
+            var command = new DeleteProductCommand(id);
             await _mediator.Send(command);
 
             return NoContent();

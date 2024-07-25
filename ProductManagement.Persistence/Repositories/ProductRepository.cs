@@ -11,6 +11,11 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
     {
     }
 
+    public async Task<bool> IsProductNameUnique(string description)
+    {
+        return !(await _context.Products.AnyAsync(p => p.Descricao.Equals(description)));
+    }
+
     public async Task<bool> IsProductNameUniqueBesidesThisProduct(Guid id, string description)
     {
         return !(await _context.Products.AnyAsync(p => p.Id != id && p.Descricao.Equals(description)));
